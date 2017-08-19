@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <RelativeLayout
+    android:id="@+id/activity_select_date"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.swordpc07.world_weather_online.selectDate">
+
+
+        <CalendarView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/calendarView4"
+            android:layout_below="@+id/editText6"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="13dp" />
+
+        <EditText
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:hint="No of Days"
+            android:inputType="date"
+            android:ems="10"
+            android:id="@+id/no_of_days_text"
+            android:layout_below="@+id/calendarView4"
+            android:layout_alignStart="@+id/calendarView4"
+            android:layout_marginStart="23dp"
+            android:layout_marginTop="13dp" />
+
+        <Spinner
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner2"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="44dp"/>
+
+        <Button
+            android:text="Click"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/click"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="22dp" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:hint="Place"
+            android:ems="10"
+            android:id="@+id/editText6"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/calendarView4" />
+
+    </RelativeLayout>
+</ScrollView>

@@ -5,24 +5,35 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.swordpc07.world_weather_online.MainActivity">
+    tools:context="com.example.swordpc07.world_weather_online.SplashScreen">
 
-
-    <ImageView
+    <!--<ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:background="@mipmap/a22"
-        android:id="@+id/imageView" />
+        android:id="@+id/imageView" />-->
 
-    <ProgressBar
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:onClick="findPlace"
+        android:id="@+id/autocompleteTextView"
+        android:hint="Please click here."
+        android:layout_marginTop="10dp"
+        android:textSize="15dp"
+        android:gravity="center"/>
+
+    <!--<ProgressBar
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/progressBar"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="20dp" />-->
+
+
 </RelativeLayout>

@@ -15,7 +15,7 @@ public class Main2Activity extends AppCompatActivity {
 
     RecyclerView mRecyclerView;
     WeatherAdapter adapter;
-    String null0;
+
     FloatingActionButton fabButton;
 
     @Override

@@ -8,6 +8,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,7 +27,7 @@ public class DownloadWeatherService extends IntentService {
 
     public String WEATHER_API = "http://api.worldweatheronline.com/premium/v1/weather.ashx?";
 
-    public String API_KEY = "fecd9c48df6841609e9124048170501";
+    public String API_KEY = "da98314d6a16444e84d42542172908";
 
     LocationManager mLocationManager;
     double lat, longt;
@@ -99,10 +100,17 @@ public class DownloadWeatherService extends IntentService {
     public class GetWeatherDetails extends AsyncTask<String, String, String> {
 
         String worldWeatherApi;
-
         String url;
+//        ProgressDialog loading;
 
         public GetWeatherDetails(){ }
+
+
+        /*@Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loading = ProgressDialog.show(getBaseContext(), "Please Wait", null, true, true);
+        }*/
 
         @Override
         protected String doInBackground(String... params) {
@@ -118,7 +126,14 @@ public class DownloadWeatherService extends IntentService {
                 Log.d("GooglePlacesReadTask", e.toString());
             }
 
-            return worldWeatherApi;
+            WeatherParser sendData = new WeatherParser();
+            try {
+                sendData.dataParser(worldWeatherApi);
+                return "done";
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return "error";
         }
 
         @Override
@@ -128,18 +143,23 @@ public class DownloadWeatherService extends IntentService {
             /*for (int i = 0; i < result.length(); i += chunkSize) {
                 Log.d("reault:", result.substring(i, Math.min(result.length(), i + chunkSize)));
             }*/
-            WeatherParser sendData = new WeatherParser();
-            try {
-                sendData.dataParser(result);
-            } catch (JSONException e) {
-                e.printStackTrace();
+
+            switch (result) {
+
+                case "done":
+//                    loading.dismiss();
+
+                    Intent i = new Intent(DownloadWeatherService.this, Main2Activity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
+                    break;
+
+                case "error":
+//                    loading.dismiss();
+                    Toast.makeText(getApplicationContext(), "Some error occur.!", Toast.LENGTH_LONG).show();
+                    break;
+
             }
-
-            Intent i = new Intent(DownloadWeatherService.this, Main2Activity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-
-
         }
     }
 

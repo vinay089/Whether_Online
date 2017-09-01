@@ -26,9 +26,6 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.CustomVi
         Mylist = list;
     }
 
-
-
-
     @Override
     public int getItemCount() {
         return (null != Mylist ? Mylist.size() : 0);
@@ -51,12 +48,15 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.CustomVi
 
 
         holder.value.setText(feedItem.getValue());
-        holder.maxTemp.setText(feedItem.getMaxtemp());
-        holder.minTemp.setText(feedItem.getMintemp());
-        holder.huidity.setText(feedItem.getHumidity());
+        holder.maxTemp.setText("max: " + feedItem.getMaxtemp());
+        holder.minTemp.setText("min: " + feedItem.getMintemp());
+        holder.huidity.setText("humid: " + feedItem.getHumidity());
         holder.time.setText(feedItem.getTime());
         //holder.imageView.setImageBitmap(Picasso.with(context).load(feedItem.getImage_url()));
-        Picasso.with(context).load(feedItem.getImage_url()).into(holder.imageView);
+
+        if(feedItem.getImage_url() != null) {
+            Picasso.with(context).load(feedItem.getImage_url()).into(holder.imageView);
+        }
     }
 
     class CustomViewHolder extends RecyclerView.ViewHolder {

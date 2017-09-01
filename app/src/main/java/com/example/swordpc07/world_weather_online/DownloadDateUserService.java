@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,12 +23,10 @@ public class DownloadDateUserService extends IntentService {
     String place, no_of_days, date, language;
     public String WEATHER_API = "http://api.worldweatheronline.com/premium/v1/weather.ashx?";
 
-    public String API_KEY = "key=fecd9c48df6841609e9124048170501&tp=12&q=";
+    public String API_KEY = "key=da98314d6a16444e84d42542172908&tp=12&q=";
 
     String url_api;
     int FLAG=0;
-
-
 
     public DownloadDateUserService(){
         super("Service");
@@ -84,7 +83,13 @@ public class DownloadDateUserService extends IntentService {
                 Log.d("GooglePlacesReadTask", e.toString());
             }
 
-            return worldWeatherApi;
+            try {
+                dataParser(worldWeatherApi);
+                return "done";
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+           return "error";
         }
 
         @Override
@@ -94,101 +99,97 @@ public class DownloadDateUserService extends IntentService {
             for (int i = 0; i < result.length(); i += chunkSize) {
                 Log.d("reault:", result.substring(i, Math.min(result.length(), i + chunkSize)));
             }*/
-            WeatherDataParser sendData= new WeatherDataParser();
 
-            try {
-                sendData.dataParser(result);
-            } catch (JSONException e) {
-                e.printStackTrace();
+            switch (result) {
+
+                case "done":
+                    Intent i = new Intent(DownloadDateUserService.this, show_Date_Weather_Details.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
+                    break;
+
+                case "error":
+
+                    Toast.makeText(getBaseContext(), "Some error occur.", Toast.LENGTH_SHORT).show();
+                    break;
             }
-
-            Intent i = new Intent(DownloadDateUserService.this, show_Date_Weather_Details.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-
 
         }
     }
 
-    public class WeatherDataParser {
+    public void dataParser(String jsonData) throws JSONException {
 
-        public WeatherDataParser() {
-        }
+        SingeltonArrayList.userDateWeather= new ArrayList<Weather_Getter_Setter>();
+        SingeltonArrayList.cityName= new ArrayList<Weather_Getter_Setter>();
 
-        public void dataParser(String jsonData) throws JSONException {
+        Weather_Getter_Setter get_set= new Weather_Getter_Setter();
+        int count=0;
 
-            SingeltonArrayList.userDateWeather= new ArrayList<Weather_Getter_Setter>();
-            SingeltonArrayList.cityName= new ArrayList<Weather_Getter_Setter>();
+        JSONObject jsonRootObject= new JSONObject(jsonData);
 
-            Weather_Getter_Setter get_set= new Weather_Getter_Setter();
-            int count=0;
+        JSONObject jsonObject= jsonRootObject.getJSONObject("data");
 
-            JSONObject jsonRootObject= new JSONObject(jsonData);
+        JSONArray jArray= jsonObject.getJSONArray("request");
+        String city_name= jArray.getJSONObject(0).getString("query");
 
-            JSONObject jsonObject= jsonRootObject.getJSONObject("data");
+        Log.d("QUery", city_name);
 
-            JSONArray jArray= jsonObject.getJSONArray("request");
-            String city_name= jArray.getJSONObject(0).getString("query");
+        get_set.setCity(city_name);
 
-            Log.d("QUery", city_name);
+        SingeltonArrayList.cityName.add(get_set);
 
-            get_set.setCity(city_name);
+        JSONArray jsonRootArray= jsonObject.getJSONArray("weather");
 
-            SingeltonArrayList.cityName.add(get_set);
+        for(int i=0; i<jsonRootArray.length(); i++) {
 
-            JSONArray jsonRootArray= jsonObject.getJSONArray("weather");
-
-            for(int i=0; i<jsonRootArray.length(); i++) {
-
-                JSONObject jsonObject1 = (JSONObject) jsonRootArray.get(i);
-                //Log.d(i+".)", String.valueOf(jsonObject1));
+            JSONObject jsonObject1 = (JSONObject) jsonRootArray.get(i);
+            //Log.d(i+".)", String.valueOf(jsonObject1));
 
 
-                String date_user_check = jsonObject1.getString("date");
-                //Log.d("dateuserchcke", date_user_check);
+            String date_user_check = jsonObject1.getString("date");
+            Log.d("dateuserchcke", date_user_check);
 
 
-                if (date_user_check.equals(date) || ( (FLAG==1) && (count < Integer.parseInt(no_of_days)) )) {
+            if (date_user_check.equals(date) || ( (FLAG==1) && (count < Integer.parseInt(no_of_days)) )) {
 
-                    FLAG=1;
-                    count++;
-                    String date_user = jsonObject1.getString("date");
-                    String MaxTemp = jsonObject1.getString("maxtempC");
-                    String MinTemp = jsonObject1.getString("mintempC");
-                    String MinTempF = jsonObject1.getString("mintempF");
-                    String MaxTempF = jsonObject1.getString("maxtempF");
+                FLAG=1;
+                count++;
+                String date_user = jsonObject1.getString("date");
+                String MaxTemp = jsonObject1.getString("maxtempC");
+                String MinTemp = jsonObject1.getString("mintempC");
+                String MinTempF = jsonObject1.getString("mintempF");
+                String MaxTempF = jsonObject1.getString("maxtempF");
 
-                    JSONArray jsonArray = jsonObject1.getJSONArray("astronomy");
-                    JSONObject jsonObjectAstrnomy = (JSONObject) jsonArray.get(0);
+                JSONArray jsonArray = jsonObject1.getJSONArray("astronomy");
+                JSONObject jsonObjectAstrnomy = (JSONObject) jsonArray.get(0);
 
-                    String sunrise = jsonObjectAstrnomy.getString("sunrise");
-                    String sunset = jsonObjectAstrnomy.getString("sunset");
-                    String moonrise = jsonObjectAstrnomy.getString("moonrise");
-                    String moonset = jsonObjectAstrnomy.getString("moonset");
+                String sunrise = jsonObjectAstrnomy.getString("sunrise");
+                String sunset = jsonObjectAstrnomy.getString("sunset");
+                String moonrise = jsonObjectAstrnomy.getString("moonrise");
+                String moonset = jsonObjectAstrnomy.getString("moonset");
 
 
 
-                    Weather_Getter_Setter weather_getter_setter = new Weather_Getter_Setter();
+                Weather_Getter_Setter weather_getter_setter = new Weather_Getter_Setter();
 
-                    weather_getter_setter.setDate(date_user);
-                    weather_getter_setter.setMintemp(MinTemp + "°" +"C");
-                    weather_getter_setter.setMinTempF(MinTempF+ "°" +"F");
-                    weather_getter_setter.setMaxtemp(MaxTemp+ "°" +"C");
-                    weather_getter_setter.setMaxTempF(MaxTempF+ "°" +"F");
-                    weather_getter_setter.setSunrise(sunrise);
-                    weather_getter_setter.setSunset(sunset);
-                    weather_getter_setter.setMoonrise(moonrise);
-                    weather_getter_setter.setMoonset(moonset);
+                weather_getter_setter.setDate(date_user);
+                weather_getter_setter.setMintemp(MinTemp + "°" +"C");
+                weather_getter_setter.setMinTempF(MinTempF+ "°" +"F");
+                weather_getter_setter.setMaxtemp(MaxTemp+ "°" +"C");
+                weather_getter_setter.setMaxTempF(MaxTempF+ "°" +"F");
+                weather_getter_setter.setSunrise(sunrise);
+                weather_getter_setter.setSunset(sunset);
+                weather_getter_setter.setMoonrise(moonrise);
+                weather_getter_setter.setMoonset(moonset);
 
-                    SingeltonArrayList.userDateWeather.add(weather_getter_setter);
+                SingeltonArrayList.userDateWeather.add(weather_getter_setter);
 
-                    Log.d((i + 1) + ") date=" + date_user, MinTemp + "|" + MinTempF + " && " + MaxTemp + "|" + MaxTempF);
+                Log.d((i + 1) + ") date=" + date_user, MinTemp + "|" + MinTempF + " && " + MaxTemp + "|" + MaxTempF);
 
-                }
+
             }
 
         }
-
 
     }
 }
